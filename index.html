@@ -94,7 +94,7 @@
             }).join('');
         }
 
-        // دالة تنسيق الأرقام بإضافة الفواصل وتحويلها إلى أرقام إنجليزية
+        // دالة تنسيق الأرقام بإضافة الفواصل الإنجليزية وتحويلها إلى أرقام إنجليزية
         function formatNumber(inputId) {
             const inputElement = document.getElementById(inputId);
             let inputValue = inputElement.value;
@@ -107,7 +107,8 @@
             inputValue = parseFloat(inputValue);
 
             if (!isNaN(inputValue)) {
-                inputElement.value = inputValue.toLocaleString(); // إضافة الفواصل
+                // إضافة الفواصل الإنجليزية باستخدام locale "en-US"
+                inputElement.value = inputValue.toLocaleString("en-US");
             } else {
                 inputElement.value = ''; // إذا لم يكن الرقم صالحًا، امسح الحقل
             }
@@ -120,7 +121,8 @@
 
             if (!isNaN(inputValue)) {
                 const aedValue = inputValue * exchangeRate;
-                outputElement.textContent = `(${aedValue.toLocaleString()} درهم إماراتي)`; // إضافة الفواصل للقيمة المحولة
+                // إضافة الفواصل الإنجليزية باستخدام locale "en-US"
+                outputElement.textContent = `(${aedValue.toLocaleString("en-US")} درهم إماراتي)`;
             } else {
                 outputElement.textContent = '';
             }
@@ -156,12 +158,12 @@
             // عرض النتائج
             let resultHtml = `
                 <h2>نتائج الحساب:</h2>
-                <p>سعر العملة بالدرهم: ${pricePerUnitAed.toLocaleString()} درهم</p>
-                <p>إجمالي الاستثمار: ${investmentAed.toLocaleString()} درهم</p>
+                <p>سعر العملة بالدرهم: ${pricePerUnitAed.toLocaleString("en-US")} درهم</p>
+                <p>إجمالي الاستثمار: ${investmentAed.toLocaleString("en-US")} درهم</p>
                 <p>عدد الوحدات المشتراة: ${unitsPurchased.toFixed(4)}</p>
-                <p>إجمالي مبلغ الشراء: ${totalPurchaseAed.toLocaleString()} درهم</p>
-                <p>إجمالي القيمة الحالية: <span class="${valueColorClass}">${totalValueAed.toLocaleString()} درهم</span></p>
-                <p>الربح/الخسارة: <span class="${valueColorClass}">${profitLossAed.toLocaleString()} درهم</span></p>
+                <p>إجمالي مبلغ الشراء: ${totalPurchaseAed.toLocaleString("en-US")} درهم</p>
+                <p>إجمالي القيمة الحالية: <span class="${valueColorClass}">${totalValueAed.toLocaleString("en-US")} درهم</span></p>
+                <p>الربح/الخسارة: <span class="${valueColorClass}">${profitLossAed.toLocaleString("en-US")} درهم</span></p>
                 <p>النسبة المئوية للربح/الخسارة: <span class="${valueColorClass}">${profitLossPercentage.toFixed(0)}%</span></p>
             `;
 
