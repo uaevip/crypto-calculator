@@ -107,12 +107,13 @@
             text-align: right;
         }
 
-        .profit {
+        /* تحديد لون النص بناءً على الربح أو الخسارة */
+        .profit-text {
             color: green;
             font-weight: bold;
         }
 
-        .loss {
+        .loss-text {
             color: red;
             font-weight: bold;
         }
@@ -135,7 +136,7 @@
         }
 
         .creator span {
-            font-weight: bold;
+            font-weight: normal; /* إزالة الخط العريض */
             color: #007bff;
         }
     </style>
@@ -247,8 +248,8 @@
             const profitLossAed = profitLossUsd * exchangeRate;
             const profitLossPercentage = totalPurchaseUsd > 0 ? (profitLossUsd / totalPurchaseUsd * 100) : 0;
 
-            // تحديد لون النص بناءً على الربح أو الخسارة
-            const valueColorClass = profitLossAed >= 0 ? 'profit' : 'loss';
+            // تحديد النص المناسب (ربح/خسارة)
+            const resultClass = profitLossAed >= 0 ? 'profit-text' : 'loss-text';
 
             // عرض النتائج
             let resultHtml = `
@@ -257,9 +258,9 @@
                 <p>إجمالي الاستثمار: ${investmentAed.toLocaleString("en-US")} درهم</p>
                 <p>عدد الوحدات المشتراة: ${unitsPurchased.toFixed(4)}</p>
                 <p>إجمالي مبلغ الشراء: ${totalPurchaseAed.toLocaleString("en-US")} درهم</p>
-                <p>إجمالي القيمة الحالية: <span class="${valueColorClass}">${totalValueAed.toLocaleString("en-US")} درهم</span></p>
-                <p>الربح/الخسارة: <span class="${valueColorClass}">${profitLossAed.toLocaleString("en-US")} درهم</span></p>
-                <p>النسبة المئوية للربح/الخسارة: <span class="${valueColorClass}">${profitLossPercentage.toFixed(0)}%</span></p>
+                <p>إجمالي القيمة الحالية: <span class="${resultClass}">${totalValueAed.toLocaleString("en-US")} درهم</span></p>
+                <p>الربح/الخسارة: <span class="${resultClass}">${profitLossAed.toLocaleString("en-US")} درهم</span></p>
+                <p>النسبة المئوية للربح/الخسارة: <span class="${resultClass}">${profitLossPercentage.toFixed(0)}%</span></p>
             `;
 
             document.getElementById('result').innerHTML = resultHtml;
