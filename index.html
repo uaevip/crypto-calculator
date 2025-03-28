@@ -94,11 +94,17 @@
             }).join('');
         }
 
-        // دالة تنسيق الأرقام بإضافة الفواصل
+        // دالة تنسيق الأرقام بإضافة الفواصل وتحويلها إلى أرقام إنجليزية
         function formatNumber(inputId) {
             const inputElement = document.getElementById(inputId);
-            let inputValue = inputElement.value.replace(/,/g, ''); // إزالة الفواصل الحالية
-            inputValue = parseFloat(convertArabicNumbers(inputValue)); // تحويل النص إلى رقم
+            let inputValue = inputElement.value;
+
+            // تحويل الأرقام العربية إلى إنجليزية
+            inputValue = convertArabicNumbers(inputValue);
+
+            // إزالة الفواصل الحالية وتنسيق الرقم
+            inputValue = inputValue.replace(/,/g, '');
+            inputValue = parseFloat(inputValue);
 
             if (!isNaN(inputValue)) {
                 inputElement.value = inputValue.toLocaleString(); // إضافة الفواصل
