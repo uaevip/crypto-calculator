@@ -62,17 +62,17 @@
 
         <!-- سعر العملة بالدولار -->
         <label for="pricePerUnit">سعر العملة بالدولار:</label>
-        <input type="number" id="pricePerUnit" step="0.01" oninput="convertToAED('pricePerUnit', 'pricePerUnitAED')" required>
+        <input type="text" id="pricePerUnit" oninput="formatNumber('pricePerUnit'); convertToAED('pricePerUnit', 'pricePerUnitAED')" required>
         <div id="pricePerUnitAED" class="conversion"></div>
 
         <!-- المبلغ الذي استثمرته -->
         <label for="investment">المبلغ الذي استثمرته (بالدولار):</label>
-        <input type="number" id="investment" step="0.01" oninput="convertToAED('investment', 'investmentAED')" required>
+        <input type="text" id="investment" oninput="formatNumber('investment'); convertToAED('investment', 'investmentAED')" required>
         <div id="investmentAED" class="conversion"></div>
 
         <!-- السعر الحالي للعملة -->
         <label for="currentPrice">السعر الحالي للعملة بالدولار:</label>
-        <input type="number" id="currentPrice" step="0.01" oninput="convertToAED('currentPrice', 'currentPriceAED')" required>
+        <input type="text" id="currentPrice" oninput="formatNumber('currentPrice'); convertToAED('currentPrice', 'currentPriceAED')" required>
         <div id="currentPriceAED" class="conversion"></div>
 
         <button onclick="calculateCryptoProfit()">احسب</button>
@@ -94,14 +94,27 @@
             }).join('');
         }
 
+        // دالة تنسيق الأرقام بإضافة الفواصل
+        function formatNumber(inputId) {
+            const inputElement = document.getElementById(inputId);
+            let inputValue = inputElement.value.replace(/,/g, ''); // إزالة الفواصل الحالية
+            inputValue = parseFloat(convertArabicNumbers(inputValue)); // تحويل النص إلى رقم
+
+            if (!isNaN(inputValue)) {
+                inputElement.value = inputValue.toLocaleString(); // إضافة الفواصل
+            } else {
+                inputElement.value = ''; // إذا لم يكن الرقم صالحًا، امسح الحقل
+            }
+        }
+
         // دالة تحويل القيم إلى الدرهم الإماراتي
         function convertToAED(inputId, outputId) {
-            const inputValue = parseFloat(convertArabicNumbers(document.getElementById(inputId).value));
+            const inputValue = parseFloat(convertArabicNumbers(document.getElementById(inputId).value.replace(/,/g, '')));
             const outputElement = document.getElementById(outputId);
 
             if (!isNaN(inputValue)) {
                 const aedValue = inputValue * exchangeRate;
-                outputElement.textContent = `(${aedValue.toFixed(2)} درهم إماراتي)`;
+                outputElement.textContent = `(${aedValue.toLocaleString()} درهم إماراتي)`; // إضافة الفواصل للقيمة المحولة
             } else {
                 outputElement.textContent = '';
             }
@@ -110,9 +123,9 @@
         // دالة حساب الأرباح
         function calculateCryptoProfit() {
             // إدخال البيانات من المستخدم
-            const pricePerUnitUsd = parseFloat(convertArabicNumbers(document.getElementById('pricePerUnit').value));
-            const investmentUsd = parseFloat(convertArabicNumbers(document.getElementById('investment').value));
-            const currentPricePerUnitUsd = parseFloat(convertArabicNumbers(document.getElementById('currentPrice').value));
+            const pricePerUnitUsd = parseFloat(convertArabicNumbers(document.getElementById('pricePerUnit').value.replace(/,/g, '')));
+            const investmentUsd = parseFloat(convertArabicNumbers(document.getElementById('investment').value.replace(/,/g, '')));
+            const currentPricePerUnitUsd = parseFloat(convertArabicNumbers(document.getElementById('currentPrice').value.replace(/,/g, '')));
 
             if (isNaN(pricePerUnitUsd) || isNaN(investmentUsd) || isNaN(currentPricePerUnitUsd)) {
                 document.getElementById('result').innerHTML = `<p style="color: red;">يرجى إدخال جميع القيم بشكل صحيح.</p>`;
@@ -137,12 +150,12 @@
             // عرض النتائج
             let resultHtml = `
                 <h2>نتائج الحساب:</h2>
-                <p>سعر العملة بالدرهم: ${pricePerUnitAed.toFixed(2)} درهم</p>
-                <p>إجمالي الاستثمار: ${investmentAed.toFixed(2)} درهم</p>
+                <p>سعر العملة بالدرهم: ${pricePerUnitAed.toLocaleString()} درهم</p>
+                <p>إجمالي الاستثمار: ${investmentAed.toLocaleString()} درهم</p>
                 <p>عدد الوحدات المشتراة: ${unitsPurchased.toFixed(4)}</p>
-                <p>إجمالي مبلغ الشراء: ${totalPurchaseAed.toFixed(2)} درهم</p>
-                <p>إجمالي القيمة الحالية: <span class="${valueColorClass}">${totalValueAed.toFixed(2)} درهم</span></p>
-                <p>الربح/الخسارة: <span class="${valueColorClass}">${profitLossAed.toFixed(2)} درهم</span></p>
+                <p>إجمالي مبلغ الشراء: ${totalPurchaseAed.toLocaleString()} درهم</p>
+                <p>إجمالي القيمة الحالية: <span class="${valueColorClass}">${totalValueAed.toLocaleString()} درهم</span></p>
+                <p>الربح/الخسارة: <span class="${valueColorClass}">${profitLossAed.toLocaleString()} درهم</span></p>
                 <p>النسبة المئوية للربح/الخسارة: <span class="${valueColorClass}">${profitLossPercentage.toFixed(0)}%</span></p>
             `;
 
