@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="ar">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black">
+    <link rel="apple-touch-icon" href="icon.png">
+    <title>حاسبة الأرباح cryptocurrency</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+            direction: rtl;
+        }
+        .container {
+            max-width: 600px;
+            margin: auto;
+        }
+        input, button {
+            display: block;
+            width: 100%;
+            margin: 10px 0;
+            padding: 10px;
+            font-size: 16px;
+        }
+        .result {
+            margin-top: 20px;
+            padding: 10px;
+            background-color: #f9f9f9;
+            border: 1px solid #ddd;
+        }
+        .profit {
+            color: green;
+        }
+        .loss {
+            color: red;
+        }
+        .creator {
+            text-align: center;
+            font-size: 14px;
+            color: #555;
+            margin-bottom: 20px;
+        }
+    </style>
+</head>
+<body>
+    <!-- عبارة المؤلف -->
+    <div class="creator">
+        تم إنشاء هذا البرنامج بواسطة M . M . ALMAZMI
+    </div>
+
+    <div class="container">
+        <h1>حاسبة الأرباح cryptocurrency</h1>
+        <label for="pricePerUnit">سعر العملة بالدولار:</label>
+        <input type="number" id="pricePerUnit" step="0.01" required>
+
+        <label for="investment">المبلغ الذي استثمرته (بالدولار):</label>
+        <input type="number" id="investment" step="0.01" required>
+
+        <label for="currentPrice">السعر الحالي للعملة بالدولار:</label>
+        <input type="number" id="currentPrice" step="0.01" required>
+
+        <button onclick="calculateCryptoProfit()">احسب</button>
+
+        <div class="result" id="result"></div>
+
+        <button onclick="resetCalculator()" style="margin-top: 20px;">إعادة العملية الحسابية</button>
+    </div>
+
+    <script>
+        function convertArabicNumbers(input) {
+            const arabicNumbers = ['٠', '١', '٢', '٣', '٤', '٥', '٦', '٧', '٨', '٩'];
+            return input.split('').map(char => {
+                const index = arabicNumbers.indexOf(char);
+                return index !== -1 ? index : char;
+            }).join('');
+        }
+
+        function calculateCryptoProfit() {
+            const exchangeRate = 3.67; // سعر التحويل من الدولار إلى الدرهم
+
+            // إدخال البيانات من المستخدم
+            const pricePerUnitUsd = parseFloat(convertArabicNumbers(document.getElementById('pricePerUnit').value));
+            const investmentUsd = parseFloat(convertArabicNumbers(document.getElementById('investment').value));
+            const currentPricePerUnitUsd = parseFloat(convertArabicNumbers(document.getElementById('currentPrice').value));
+
+            if (isNaN(pricePerUnitUsd) || isNaN(investmentUsd) || isNaN(currentPricePerUnitUsd)) {
+                document.getElementById('result').innerHTML = `<p style="color: red;">يرجى إدخال جميع القيم بشكل صحيح.</p>`;
+                return;
+            }
+
+            // العمليات الحسابية
+            const pricePerUnitAed = pricePerUnitUsd * exchangeRate;
+            const investmentAed = investmentUsd * exchangeRate;
+            const unitsPurchased = pricePerUnitUsd > 0 ? investmentUsd / pricePerUnitUsd : 0;
+            const totalPurchaseUsd = pricePerUnitUsd * unitsPurchased;
+            const totalPurchaseAed = totalPurchaseUsd * exchangeRate;
+            const totalValueUsd = currentPricePerUnitUsd * unitsPurchased;
+            const totalValueAed = totalValueUsd * exchangeRate;
+            const profitLossUsd = totalValueUsd - totalPurchaseUsd;
+            const profitLossAed = profitLossUsd * exchangeRate;
+            const profitLossPercentage = totalPurchaseUsd > 0 ? (profitLossUsd / totalPurchaseUsd * 100) : 0;
+
+            // تحديد لون النص بناءً على الربح أو الخسارة
+            const valueColorClass = profitLossAed >= 0 ? 'profit' : 'loss';
+
+            // عرض النتائج
+            let resultHtml = `
+                <h2>نتائج الحساب:</h2>
+                <p>سعر العملة بالدرهم: ${pricePerUnitAed.toFixed(2)} درهم</p>
+                <p>إجمالي الاستثمار: ${investmentAed.toFixed(2)} درهم</p>
+                <p>عدد الوحدات المشتراة: ${unitsPurchased.toFixed(4)}</p>
+                <p>إجمالي مبلغ الشراء: ${totalPurchaseAed.toFixed(2)} درهم</p>
+                <p>إجمالي القيمة الحالية: <span class="${valueColorClass}">${totalValueAed.toFixed(2)} درهم</span></p>
+                <p>الربح/الخسارة: <span class="${valueColorClass}">${profitLossAed.toFixed(2)} درهم</span></p>
+                <p>النسبة المئوية للربح/الخسارة: <span class="${valueColorClass}">${profitLossPercentage.toFixed(0)}%</span></p>
+            `;
+
+            document.getElementById('result').innerHTML = resultHtml;
+        }
+
+        function resetCalculator() {
+            // إعادة تعيين جميع الحقول والمحتوى
+            document.getElementById('pricePerUnit').value = '';
+            document.getElementById('investment').value = '';
+            document.getElementById('currentPrice').value = '';
+            document.getElementById('result').innerHTML = '';
+        }
+    </script>
+</body>
+</html>
