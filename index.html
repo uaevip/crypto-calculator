@@ -15,7 +15,7 @@
             padding: 0;
             background-color: #f9f9f9;
             color: #333;
-            direction: rtl;
+            direction: rtl; /* النص من اليمين إلى اليسار */
             text-align: center;
         }
 
@@ -47,8 +47,9 @@
 
         /* حاوية النموذج */
         .container {
-            max-width: 600px;
-            margin: auto;
+            max-width: 600px; /* الحد الأقصى للعرض */
+            margin-left: auto; /* يزيح إلى اليمين */
+            margin-right: auto; /* تضيف مسافة صغيرة من اليمين */
             padding: 20px;
             background-color: white;
             border-radius: 10px;
@@ -65,7 +66,8 @@
         }
 
         input {
-            width: 100%;
+            width: 80%; /* تصغير العرض إلى 80% */
+            max-width: 500px; /* تحديد الحد الأقصى للعرض */
             padding: 10px;
             margin-top: 5px;
             font-size: 1rem;
@@ -81,7 +83,8 @@
 
         /* زر الحساب */
         button {
-            width: 100%;
+            width: 80%; /* تصغير العرض إلى 80% */
+            max-width: 500px; /* تحديد الحد الأقصى للعرض */
             padding: 12px;
             margin-top: 20px;
             font-size: 1.1rem;
@@ -120,11 +123,12 @@
 
         /* عرض الدرهم الإماراتي */
         .conversion {
-            font-size: 0.8rem; /* خط أصغر */
+            font-size: 0.8rem;
             color: gray;
-            margin-top: 5px; /* زيادة المسافة بين الحقل والنص */
+            margin-top: 5px;
             margin-bottom: 10px;
-            text-align: left;
+            text-align: left; /* المحاذاة إلى اليسار */
+            padding-left: 45px; /* تصغير المسافة بمقدار نقطتين */
         }
 
         /* عبارة المؤلف */
@@ -136,7 +140,7 @@
         }
 
         .creator span {
-            font-weight: normal; /* إزالة الخط العريض */
+            font-weight: normal;
             color: #007bff;
         }
     </style>
@@ -200,11 +204,10 @@
 
             // إزالة الفواصل الحالية وتنسيق الرقم
             inputValue = inputValue.replace(/,/g, '');
-            inputValue = parseFloat(inputValue);
-
-            if (!isNaN(inputValue)) {
-                // إضافة الفواصل الإنجليزية باستخدام locale "en-US"
-                inputElement.value = inputValue.toLocaleString("en-US");
+            
+            // التحقق من صحة الرقم (يسمح بالأرقام العشرية)
+            if (/^-?\d*\.?\d*$/.test(inputValue)) {
+                inputElement.value = inputValue;
             } else {
                 inputElement.value = ''; // إذا لم يكن الرقم صالحًا، امسح الحقل
             }
