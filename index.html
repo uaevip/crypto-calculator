@@ -18,7 +18,6 @@
             direction: rtl; /* النص من اليمين إلى اليسار */
             text-align: center;
         }
-
         /* عنوان الصفحة */
         header {
             background-color: #007bff;
@@ -26,17 +25,14 @@
             padding: 20px;
             margin-bottom: 20px;
         }
-
         header h1 {
             font-size: 2.5rem;
             margin: 0;
         }
-
         header p {
             font-size: 1.2rem;
             margin-top: 10px;
         }
-
         /* شعار البرنامج */
         .logo {
             font-size: 3rem;
@@ -44,7 +40,6 @@
             color: #007bff;
             margin-bottom: 20px;
         }
-
         /* حاوية النموذج */
         .container {
             max-width: 600px; /* الحد الأقصى للعرض */
@@ -55,7 +50,6 @@
             border-radius: 10px;
             box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
         }
-
         /* حقول الإدخال */
         label {
             font-size: 1rem;
@@ -64,7 +58,6 @@
             display: block;
             text-align: right;
         }
-
         input {
             width: 80%; /* تصغير العرض إلى 80% */
             max-width: 500px; /* تحديد الحد الأقصى للعرض */
@@ -75,12 +68,10 @@
             border-radius: 5px;
             transition: border-color 0.3s ease;
         }
-
         input:focus {
             border-color: #007bff;
             outline: none;
         }
-
         /* زر الحساب */
         button {
             width: 80%; /* تصغير العرض إلى 80% */
@@ -95,11 +86,9 @@
             cursor: pointer;
             transition: background-color 0.3s ease;
         }
-
         button:hover {
             background-color: #0056b3;
         }
-
         /* نتائج الحساب */
         .result {
             margin-top: 20px;
@@ -109,18 +98,15 @@
             border-radius: 5px;
             text-align: right;
         }
-
         /* تحديد لون النص بناءً على الربح أو الخسارة */
         .profit-text {
             color: green;
             font-weight: bold;
         }
-
         .loss-text {
             color: red;
             font-weight: bold;
         }
-
         /* عرض الدرهم الإماراتي */
         .conversion {
             font-size: 0.8rem;
@@ -128,9 +114,8 @@
             margin-top: 5px;
             margin-bottom: 10px;
             text-align: left; /* المحاذاة إلى اليسار */
-            padding-left: 45px; /* تصغير المسافة بمقدار نقطتين */
+            padding-left: 50px; /* تصغير المسافة بمقدار نقطتين */
         }
-
         /* عبارة المؤلف */
         .creator {
             margin-top: 30px;
@@ -138,7 +123,6 @@
             color: #555;
             text-align: center;
         }
-
         .creator span {
             font-weight: normal;
             color: #007bff;
@@ -152,38 +136,42 @@
         <h1>حاسبة الأرباح</h1>
         <p>أداة ذكية لحساب أرباح العملات الرقمية</p>
     </header>
-
     <!-- حاوية النموذج -->
     <div class="container">
         <!-- سعر العملة بالدولار -->
         <label for="pricePerUnit">سعر العملة بالدولار:</label>
         <input type="text" id="pricePerUnit" oninput="formatNumber('pricePerUnit'); convertToAED('pricePerUnit', 'pricePerUnitAED')" required>
         <div id="pricePerUnitAED" class="conversion"></div>
-
         <!-- المبلغ الذي استثمرته -->
         <label for="investment">المبلغ الذي استثمرته (بالدولار):</label>
         <input type="text" id="investment" oninput="formatNumber('investment'); convertToAED('investment', 'investmentAED')" required>
         <div id="investmentAED" class="conversion"></div>
-
         <!-- السعر الحالي للعملة -->
         <label for="currentPrice">السعر الحالي للعملة بالدولار:</label>
         <input type="text" id="currentPrice" oninput="formatNumber('currentPrice'); convertToAED('currentPrice', 'currentPriceAED')" required>
         <div id="currentPriceAED" class="conversion"></div>
-
         <button onclick="calculateCryptoProfit()">احسب الأرباح</button>
-
         <div class="result" id="result"></div>
-
         <button onclick="resetCalculator()" style="margin-top: 20px; background-color: #dc3545;">إعادة العملية الحسابية</button>
     </div>
-
     <!-- عبارة المؤلف -->
     <div class="creator">
         تم إنشاء هذا البرنامج بواسطة <span>M . M . ALMAZMI</span>
     </div>
-
     <script>
-        const exchangeRate = 3.67; // سعر التحويل من الدولار إلى الدرهم
+        let exchangeRate = 3.67; // سعر التحويل الافتراضي من الدولار إلى الدرهم
+
+        // دالة لتحديث سعر الصرف تلقائيًا
+        async function fetchExchangeRate() {
+            try {
+                const response = await fetch('https://api.exchangerate-api.com/v4/latest/USD');
+                const data = await response.json();
+                exchangeRate = data.rates.AED; // تحديث سعر الدرهم الإماراتي
+                console.log(`تم تحديث سعر الصرف: 1 دولار = ${exchangeRate} درهم`);
+            } catch (error) {
+                console.error('حدث خطأ أثناء جلب سعر الصرف:', error);
+            }
+        }
 
         // دالة تحويل الأرقام العربية إلى أرقام إنجليزية
         function convertArabicNumbers(input) {
@@ -198,13 +186,10 @@
         function formatNumber(inputId) {
             const inputElement = document.getElementById(inputId);
             let inputValue = inputElement.value;
-
             // تحويل الأرقام العربية إلى إنجليزية
             inputValue = convertArabicNumbers(inputValue);
-
             // إزالة الفواصل الحالية وتنسيق الرقم
             inputValue = inputValue.replace(/,/g, '');
-            
             // التحقق من صحة الرقم (يسمح بالأرقام العشرية)
             if (/^-?\d*\.?\d*$/.test(inputValue)) {
                 inputElement.value = inputValue;
@@ -217,7 +202,6 @@
         function convertToAED(inputId, outputId) {
             const inputValue = parseFloat(convertArabicNumbers(document.getElementById(inputId).value.replace(/,/g, '')));
             const outputElement = document.getElementById(outputId);
-
             if (!isNaN(inputValue)) {
                 const aedValue = inputValue * exchangeRate;
                 // إضافة الفواصل الإنجليزية باستخدام locale "en-US"
@@ -233,12 +217,10 @@
             const pricePerUnitUsd = parseFloat(convertArabicNumbers(document.getElementById('pricePerUnit').value.replace(/,/g, '')));
             const investmentUsd = parseFloat(convertArabicNumbers(document.getElementById('investment').value.replace(/,/g, '')));
             const currentPricePerUnitUsd = parseFloat(convertArabicNumbers(document.getElementById('currentPrice').value.replace(/,/g, '')));
-
             if (isNaN(pricePerUnitUsd) || isNaN(investmentUsd) || isNaN(currentPricePerUnitUsd)) {
                 document.getElementById('result').innerHTML = `<p style="color: red;">يرجى إدخال جميع القيم بشكل صحيح.</p>`;
                 return;
             }
-
             // العمليات الحسابية
             const pricePerUnitAed = pricePerUnitUsd * exchangeRate;
             const investmentAed = investmentUsd * exchangeRate;
@@ -250,10 +232,8 @@
             const profitLossUsd = totalValueUsd - totalPurchaseUsd;
             const profitLossAed = profitLossUsd * exchangeRate;
             const profitLossPercentage = totalPurchaseUsd > 0 ? (profitLossUsd / totalPurchaseUsd * 100) : 0;
-
             // تحديد النص المناسب (ربح/خسارة)
             const resultClass = profitLossAed >= 0 ? 'profit-text' : 'loss-text';
-
             // عرض النتائج
             let resultHtml = `
                 <h2>نتائج الحساب:</h2>
@@ -265,7 +245,6 @@
                 <p>الربح/الخسارة: <span class="${resultClass}">${profitLossAed.toLocaleString("en-US")} درهم</span></p>
                 <p>النسبة المئوية للربح/الخسارة: <span class="${resultClass}">${profitLossPercentage.toFixed(0)}%</span></p>
             `;
-
             document.getElementById('result').innerHTML = resultHtml;
         }
 
@@ -279,6 +258,9 @@
             document.getElementById('currentPriceAED').textContent = '';
             document.getElementById('result').innerHTML = '';
         }
+
+        // تحديث سعر الصرف عند بدء تشغيل الصفحة
+        fetchExchangeRate();
     </script>
 </body>
 </html>
