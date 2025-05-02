@@ -107,14 +107,12 @@
             color: red;
             font-weight: bold;
         }
-        /* عرض الدرهم الإماراتي */
-        .conversion {
+        /* عرض الدرهم والدولار */
+        .conversion-small {
             font-size: 0.8rem;
             color: gray;
             margin-top: 5px;
-            margin-bottom: 10px;
-            text-align: left; /* المحاذاة إلى اليسار */
-            padding-left: 50px; /* تصغير المسافة بمقدار نقطتين */
+            text-align: left;
         }
         /* عبارة المؤلف */
         .creator {
@@ -186,13 +184,19 @@
         function formatNumber(inputId) {
             const inputElement = document.getElementById(inputId);
             let inputValue = inputElement.value;
+
             // تحويل الأرقام العربية إلى إنجليزية
             inputValue = convertArabicNumbers(inputValue);
+
             // إزالة الفواصل الحالية وتنسيق الرقم
             inputValue = inputValue.replace(/,/g, '');
+
             // التحقق من صحة الرقم (يسمح بالأرقام العشرية)
             if (/^-?\d*\.?\d*$/.test(inputValue)) {
-                inputElement.value = inputValue;
+                const parts = inputValue.split('.');
+                const integerPart = parts[0].replace(/\B(?=(\d{3})+(?!\d))/g, ',');
+                const decimalPart = parts[1] ? '.' + parts[1] : '';
+                inputElement.value = integerPart + decimalPart;
             } else {
                 inputElement.value = ''; // إذا لم يكن الرقم صالحًا، امسح الحقل
             }
@@ -202,9 +206,9 @@
         function convertToAED(inputId, outputId) {
             const inputValue = parseFloat(convertArabicNumbers(document.getElementById(inputId).value.replace(/,/g, '')));
             const outputElement = document.getElementById(outputId);
+
             if (!isNaN(inputValue)) {
                 const aedValue = inputValue * exchangeRate;
-                // إضافة الفواصل الإنجليزية باستخدام locale "en-US"
                 outputElement.textContent = `(${aedValue.toLocaleString("en-US")} درهم إماراتي)`;
             } else {
                 outputElement.textContent = '';
@@ -217,33 +221,46 @@
             const pricePerUnitUsd = parseFloat(convertArabicNumbers(document.getElementById('pricePerUnit').value.replace(/,/g, '')));
             const investmentUsd = parseFloat(convertArabicNumbers(document.getElementById('investment').value.replace(/,/g, '')));
             const currentPricePerUnitUsd = parseFloat(convertArabicNumbers(document.getElementById('currentPrice').value.replace(/,/g, '')));
+
             if (isNaN(pricePerUnitUsd) || isNaN(investmentUsd) || isNaN(currentPricePerUnitUsd)) {
                 document.getElementById('result').innerHTML = `<p style="color: red;">يرجى إدخال جميع القيم بشكل صحيح.</p>`;
                 return;
             }
+
             // العمليات الحسابية
-            const pricePerUnitAed = pricePerUnitUsd * exchangeRate;
-            const investmentAed = investmentUsd * exchangeRate;
             const unitsPurchased = pricePerUnitUsd > 0 ? investmentUsd / pricePerUnitUsd : 0;
             const totalPurchaseUsd = pricePerUnitUsd * unitsPurchased;
-            const totalPurchaseAed = totalPurchaseUsd * exchangeRate;
             const totalValueUsd = currentPricePerUnitUsd * unitsPurchased;
-            const totalValueAed = totalValueUsd * exchangeRate;
             const profitLossUsd = totalValueUsd - totalPurchaseUsd;
+
+            // تحويل القيم إلى الدرهم الإماراتي
+            const totalPurchaseAed = totalPurchaseUsd * exchangeRate;
+            const totalValueAed = totalValueUsd * exchangeRate;
             const profitLossAed = profitLossUsd * exchangeRate;
             const profitLossPercentage = totalPurchaseUsd > 0 ? (profitLossUsd / totalPurchaseUsd * 100) : 0;
+
             // تحديد النص المناسب (ربح/خسارة)
             const resultClass = profitLossAed >= 0 ? 'profit-text' : 'loss-text';
+
             // عرض النتائج
             let resultHtml = `
                 <h2>نتائج الحساب:</h2>
-                <p>سعر العملة بالدرهم: ${pricePerUnitAed.toLocaleString("en-US")} درهم</p>
-                <p>إجمالي الاستثمار: ${investmentAed.toLocaleString("en-US")} درهم</p>
                 <p>عدد الوحدات المشتراة: ${unitsPurchased.toFixed(4)}</p>
-                <p>إجمالي مبلغ الشراء: ${totalPurchaseAed.toLocaleString("en-US")} درهم</p>
-                <p>إجمالي القيمة الحالية: <span class="${resultClass}">${totalValueAed.toLocaleString("en-US")} درهم</span></p>
-                <p>الربح/الخسارة: <span class="${resultClass}">${profitLossAed.toLocaleString("en-US")} درهم</span></p>
-                <p>النسبة المئوية للربح/الخسارة: <span class="${resultClass}">${profitLossPercentage.toFixed(0)}%</span></p>
+                <p>إجمالي الاستثمار: 
+                    <span class="${resultClass}">${totalPurchaseAed.toLocaleString("en-US")} درهم</span>
+                    <span class="conversion-small">(${totalPurchaseUsd.toLocaleString("en-US")} دولار)</span>
+                </p>
+                <p>إجمالي القيمة الحالية: 
+                    <span class="${resultClass}">${totalValueAed.toLocaleString("en-US")} درهم</span>
+                    <span class="conversion-small">(${totalValueUsd.toLocaleString("en-US")} دولار)</span>
+                </p>
+                <p>الربح/الخسارة: 
+                    <span class="${resultClass}">${profitLossAed.toLocaleString("en-US")} درهم</span>
+                    <span class="conversion-small">(${profitLossUsd.toLocaleString("en-US")} دولار)</span>
+                </p>
+                <p>النسبة المئوية للربح/الخسارة: 
+                    <span class="${resultClass}">${profitLossPercentage.toFixed(0)}%</span>
+                </p>
             `;
             document.getElementById('result').innerHTML = resultHtml;
         }
