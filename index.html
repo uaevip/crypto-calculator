@@ -1,3 +1,4 @@
+```html
 <!DOCTYPE html>
 <html lang="ar">
 <head>
@@ -107,13 +108,23 @@
             color: red;
             font-weight: bold;
         }
-        /* إضافة نمط جديد للنتائج بالدولار بخط صغير */
-        .usd-note {
-            font-size: 0.9rem;
+        /* عرض الدرهم الإماراتي */
+        .conversion {
+            font-size: 0.8rem;
             color: gray;
-            margin-top: -10px;
+            margin-top: 5px;
             margin-bottom: 10px;
-            display: inline-block;
+            text-align: left; /* المحاذاة إلى اليسار */
+            padding-left: 30px; /* المزيد من المسافة إلى اليسار */
+        }
+        /* إضافة نمط جديد للنتائج بالدولار بخط صغير ولون رمادي أسفل النتائج */
+        .usd-note {
+            font-size: 0.8rem;
+            color: gray;
+            margin-top: 5px;
+            margin-bottom: 10px;
+            text-align: left;
+            padding-left: 30px; /* المزيد من المسافة إلى اليسار */
         }
         /* عبارة المؤلف */
         .creator {
@@ -242,23 +253,23 @@
             // تحديد النص المناسب (ربح/خسارة)
             const resultClass = profitLossAed >= 0 ? 'profit-text' : 'loss-text';
 
-            // عرض النتائج مع إضافة النتائج بالدولار بخط صغير
+            // عرض النتائج مع إضافة النتائج بالدولار بخط صغير ولون رمادي
             let resultHtml = `
                 <h2>نتائج الحساب:</h2>
-                <p>سعر العملة بالدرهم: ${pricePerUnitAed.toLocaleString("en-US")} درهم 
+                <p>سعر العملة: ${pricePerUnitAed.toLocaleString("en-US")} درهم 
                     <span class="usd-note">(بالدولار = ${pricePerUnitUsd.toLocaleString("en-US")})</span>
                 </p>
-                <p>إجمالي الاستثمار بالدرهم: ${investmentAed.toLocaleString("en-US")} درهم 
+                <p>إجمالي الاستثمار: ${investmentAed.toLocaleString("en-US")} درهم 
                     <span class="usd-note">(بالدولار = ${investmentUsd.toLocaleString("en-US")})</span>
                 </p>
                 <p>عدد الوحدات المشتراة: ${unitsPurchased.toFixed(4)}</p>
-                <p>إجمالي مبلغ الشراء بالدرهم: ${totalPurchaseAed.toLocaleString("en-US")} درهم 
+                <p>إجمالي مبلغ الشراء: ${totalPurchaseAed.toLocaleString("en-US")} درهم 
                     <span class="usd-note">(بالدولار = ${totalPurchaseUsd.toLocaleString("en-US")})</span>
                 </p>
-                <p>إجمالي القيمة الحالية بالدرهم: <span class="${resultClass}">${totalValueAed.toLocaleString("en-US")} درهم</span> 
+                <p>إجمالي القيمة الحالية: <span class="${resultClass}">${totalValueAed.toLocaleString("en-US")} درهم</span> 
                     <span class="usd-note">(بالدولار = ${totalValueUsd.toLocaleString("en-US")})</span>
                 </p>
-                <p>الربح/الخسارة بالدرهم: <span class="${resultClass}">${profitLossAed.toLocaleString("en-US")} درهم</span> 
+                <p>الربح/الخسارة: <span class="${resultClass}">${profitLossAed.toLocaleString("en-US")} درهم</span> 
                     <span class="usd-note">(بالدولار = ${profitLossUsd.toLocaleString("en-US")})</span>
                 </p>
                 <p>النسبة المئوية للربح/الخسارة: <span class="${resultClass}">${profitLossPercentage.toFixed(0)}%</span></p>
@@ -282,3 +293,4 @@
     </script>
 </body>
 </html>
+```
